@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Universal Cosmological Explorer | सार्वজনীন মহাজাগতিক অনুসন্ধানকারী</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Hind+Siliguri:wght@400;600;700&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        serif: ['"Cinzel"', 'serif'],
+                        bengali: ['"Hind Siliguri"', 'sans-serif']
+                    },
+                    colors: {
+                        cosmos: {
+                            bg: '#04060f',
+                            card: '#0b1021',
+                            border: '#1e294b',
+                            primary: '#8b5cf6',
+                            accent: '#3b82f6',
+                            gold: '#fbbf24',
+                            glow: '#c084fc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #04060f;
+            color: #f1f5f9;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow-x: hidden;
+        }
+        .glass-card {
+            background: rgba(11, 16, 33, 0.8);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(139, 92, 246, 0.25);
+        }
+        .glass-card:hover {
+            border-color: rgba(251, 191, 36, 0.5);
+            box-shadow: 0 10px 30px -10px rgba(139, 92, 246, 0.35);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #c084fc 0%, #3b82f6 50%, #fbbf24 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        #starCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #04060f;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e294b;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #8b5cf6;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased relative">
+
+    <!-- Starfield Animation Canvas -->
+    <canvas id="starCanvas"></canvas>
+
+    <!-- Ambient Glowing Orbs -->
+    <div class="fixed top-[-10%] left-[-10%] w-[500px] h-[500px] bg-purple-900/20 rounded-full blur-[120px] pointer-events-none"></div>
+    <div class="fixed bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-blue-900/20 rounded-full blur-[140px] pointer-events-none"></div>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 bg-[#04060f]/80 backdrop-blur-md border-b border-purple-900/30 px-4 sm:px-8 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-blue-600 flex items-center justify-center shadow-lg shadow-purple-500/30">
+                <i data-lucide="orbit" class="w-6 h-6 text-white animate-spin-slow"></i>
+            </div>
+            <div>
+                <h1 class="text-base sm:text-lg font-extrabold tracking-tight font-serif gradient-text">Cosmological Explorer</h1>
+                <p class="text-[10px] text-purple-300 font-semibold uppercase tracking-wider">সার্বজনীন মহাজাগতিক অনুসন্ধানকারী</p>
+            </div>
+        </div>
+
+        <!-- Navigation Tabs -->
+        <nav class="hidden md:flex items-center gap-2 bg-slate-900/80 p-1.5 rounded-2xl border border-purple-500/20">
+            <button onclick="switchTab('explorer')" id="nav-explorer" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 text-white transition shadow-md">Node Network</button>
+            <button onclick="switchTab('theories')" id="nav-theories" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition">Theories & Physics</button>
+            <button onclick="switchTab('ai-synthesizer')" id="nav-ai-synthesizer" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition">AI Insight Synthesizer</button>
+            <button onclick="switchTab('membership')" id="nav-membership" class="nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition">Academic Access</button>
+        </nav>
+
+        <!-- Subscription Badge -->
+        <button onclick="switchTab('membership')" class="px-4 py-2 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold flex items-center gap-1.5 hover:bg-amber-500/30 transition">
+            <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i> Pro Scholar
+        </button>
+    </header>
+
+    <!-- Main Content Canvas -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-8 py-8 relative z-10">
+
+        <!-- 1. EXPLORER / VISUAL NODE NETWORK TAB -->
+        <section id="tab-explorer" class="tab-content space-y-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="px-3.5 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-bold uppercase tracking-wider">Interactive Digital Encyclopedia</span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold font-serif mt-3 mb-3 gradient-text">Universal Cosmological Network</h2>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Explore the interconnected web of cosmic theories, quantum entanglement, and metaphysical dimensions. Click any node to reveal academic breakdowns.
+                </p>
+            </div>
+
+            <!-- Visual Node Interactive Grid / Map -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                <!-- Node Selection List -->
+                <div class="lg:col-span-1 space-y-3" id="nodeListContainer">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Active Node Detail Card -->
+                <div class="lg:col-span-2 glass-card p-6 sm:p-8 rounded-3xl sticky top-24 space-y-6">
+                    <div class="flex items-center justify-between border-b border-purple-900/30 pb-4">
+                        <div>
+                            <span class="text-xs font-bold text-purple-400 uppercase tracking-widest" id="activeNodeCategory">Cosmic Theory</span>
+                            <h3 class="text-2xl sm:text-3xl font-bold font-serif text-white mt-1" id="activeNodeTitle">Select a Node</h3>
+                        </div>
+                        <div class="p-3 rounded-2xl bg-purple-500/20 text-purple-300">
+                            <i data-lucide="atom" class="w-6 h-6"></i>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-xs font-bold uppercase tracking-wider text-amber-400 mb-1">Concept Summary</h4>
+                            <p class="text-sm sm:text-base text-slate-200 leading-relaxed" id="activeNodeDesc">
+                                Click any cosmological node on the left to examine its scientific principles, quantum connections, and philosophical implications.
+                            </p>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                            <div class="p-4 rounded-2xl bg-slate-900/60 border border-purple-500/20">
+                                <span class="text-[11px] font-bold text-purple-400 uppercase block mb-1">Interconnectivity</span>
+                                <p class="text-xs text-slate-300" id="activeNodeConnection">Relates to quantum vacuum & multiverse models.</p>
+                            </div>
+                            <div class="p-4 rounded-2xl bg-slate-900/60 border border-purple-500/20">
+                                <span class="text-[11px] font-bold text-amber-400 uppercase block mb-1">Metaphysical Bridge</span>
+                                <p class="text-xs text-slate-300" id="activeNodeMeta">Bridges eastern non-dualism with modern astrophysics.</p>
+                            </div>
+                        </div>
+
+                        <div class="p-4 rounded-2xl bg-gradient-to-r from-purple-900/30 to-blue-900/20 border border-purple-500/30 flex items-center justify-between">
+                            <div>
+                                <span class="text-xs text-purple-300 font-semibold block">Academic Research Paper</span>
+                                <span class="text-sm font-bold text-white" id="activeNodePaper">Quantum Heartbeat & Universal Rhythm</span>
+                            </div>
+                            <button onclick="alert('Downloading academic research brief PDF...')" class="px-4 py-2 rounded-xl bg-purple-600 hover:bg-purple-500 text-white text-xs font-bold shadow-md transition">
+                                Access PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. THEORIES & PHYSICS TAB -->
+        <section id="tab-theories" class="tab-content hidden space-y-6">
+            <div class="glass-card p-6 sm:p-10 rounded-3xl">
+                <div class="max-w-2xl mb-8">
+                    <span class="text-xs font-bold text-purple-400 uppercase tracking-widest">Advanced Repository</span>
+                    <h2 class="text-3xl font-bold font-serif mt-1">Cosmological Theories & Quantum Models</h2>
+                    <p class="text-sm text-slate-300 mt-2">Curated articles and mathematical frameworks for science writers and educators.</p>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="theoriesGrid">
+                    <!-- Populated via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. AI INSIGHT SYNTHESIZER TAB -->
+        <section id="tab-ai-synthesizer" class="tab-content hidden space-y-8">
+            <div class="glass-card p-6 sm:p-10 rounded-3xl max-w-3xl mx-auto border border-purple-500/30">
+                <div class="text-center max-w-xl mx-auto mb-8">
+                    <span class="px-3.5 py-1 rounded-full bg-blue-500/20 border border-blue-500/40 text-blue-300 text-xs font-bold uppercase tracking-wider">AI Knowledge Engine</span>
+                    <h2 class="text-3xl font-extrabold font-serif mt-3 mb-2">Cosmological Synthesis</h2>
+                    <p class="text-sm text-slate-300">Ask any complex question combining quantum physics, astrophysics, or metaphysics to receive instant academic synthesis.</p>
+                </div>
+
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-2">Select Domain Framework</label>
+                        <select class="w-full bg-slate-900 text-white text-sm px-4 py-3 rounded-xl border border-purple-500/30 focus:outline-none focus:border-purple-500">
+                            <option>Quantum Entanglement & Universal Consciousness</option>
+                            <option>General Relativity & Holographic Principle</option>
+                            <option>Vedic Cosmology & Modern Astrophysics Bridge</option>
+                            <option>Multiverse Topology & Thermodynamic Arrow of Time</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-purple-300 mb-2">Enter Inquiry or Hypothesis</label>
+                        <textarea rows="3" id="aiQueryInput" placeholder="e.g., How does the holographic principle explain non-local information transfer in quantum mechanics?" class="w-full bg-slate-900 text-white text-sm p-4 rounded-xl border border-purple-500/30 focus:outline-none focus:border-purple-500"></textarea>
+                    </div>
+
+                    <button onclick="synthesizeAI()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-purple-600 via-blue-600 to-amber-500 hover:opacity-95 text-white font-bold text-sm shadow-xl transition flex items-center justify-center gap-2">
+                        <i data-lucide="sparkles" class="w-5 h-5"></i> Synthesize Cosmological Insight
+                    </button>
+                </div>
+
+                <!-- AI Output Box -->
+                <div id="aiOutputBox" class="hidden mt-8 p-6 rounded-2xl bg-slate-950/90 border border-purple-500/30 space-y-4">
+                    <!-- Injected via JS -->
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. MEMBERSHIP & SCHOLAR ACCESS TAB -->
+        <section id="tab-membership" class="tab-content hidden space-y-8">
+            <div class="text-center max-w-2xl mx-auto">
+                <span class="px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 text-xs font-bold uppercase tracking-wider">Monetization & Access</span>
+                <h2 class="text-3xl sm:text-5xl font-extrabold font-serif mt-3 mb-3 gradient-text">Pro Scholar Subscriptions</h2>
+                <p class="text-sm sm:text-base text-slate-300 leading-relaxed">
+                    Designed for science writers, educators, researchers, and inquisitive minds seeking deep-dive modular research papers and AI synthesis tools.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+                <!-- Tier 1 -->
+                <div class="glass-card p-8 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-purple-400">Inquisitive Mind</span>
+                        <h3 class="text-2xl font-bold font-serif text-white mt-2">$9 <span class="text-xs text-slate-400">/ month</span></h3>
+                        <p class="text-xs text-slate-300 mt-2">Essential access to node networks and basic articles.</p>
+                        <ul class="mt-6 space-y-3 text-xs text-slate-200">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Full Node Explorer Access</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Standard Theory Repository</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> 50 AI Syntheses / Month</li>
+                        </ul>
+                    </div>
+                    <button onclick="alert('Redirecting to secure checkout...')" class="mt-8 w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs">Choose Plan</button>
+                </div>
+
+                <!-- Tier 2 (Featured) -->
+                <div class="glass-card p-8 rounded-3xl flex flex-col justify-between border-amber-500/50 bg-gradient-to-b from-purple-950/40 to-slate-900/80 shadow-2xl relative">
+                    <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-amber-500 text-slate-950 font-bold text-[10px] uppercase tracking-wider">Most Popular</div>
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-amber-400">Science Writer / Educator</span>
+                        <h3 class="text-2xl font-bold font-serif text-white mt-2">$29 <span class="text-xs text-slate-400">/ month</span></h3>
+                        <p class="text-xs text-slate-300 mt-2">Advanced tools for article writing, lectures, and research.</p>
+                        <ul class="mt-6 space-y-3 text-xs text-slate-200">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400"></i> Unlimited Node Explorer Maps</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400"></i> Full PDF Research Downloads</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400"></i> Unlimited AI Synthesizer Access</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-amber-400"></i> Exportable Diagrams & Citations</li>
+                        </ul>
+                    </div>
+                    <button onclick="alert('Redirecting to secure checkout...')" class="mt-8 w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-purple-600 text-slate-950 font-extrabold text-xs shadow-lg">Subscribe Now</button>
+                </div>
+
+                <!-- Tier 3 -->
+                <div class="glass-card p-8 rounded-3xl flex flex-col justify-between">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-400">Institutional / Lab</span>
+                        <h3 class="text-2xl font-bold font-serif text-white mt-2">$99 <span class="text-xs text-slate-400">/ month</span></h3>
+                        <p class="text-xs text-slate-300 mt-2">Multi-seat academic licenses for university departments.</p>
+                        <ul class="mt-6 space-y-3 text-xs text-slate-200">
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Up to 10 Researcher Seats</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> API Access for Custom Dashboards</li>
+                            <li class="flex items-center gap-2"><i data-lucide="check" class="w-4 h-4 text-emerald-400"></i> Dedicated Cosmological Consultant</li>
+                        </ul>
+                    </div>
+                    <button onclick="alert('Contacting institutional sales...')" class="mt-8 w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-xs">Contact Sales</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Application Scripting -->
+    <script>
+        // Cosmological Node Dataset
+        const cosmologicalNodes = [
+            {
+                id: 1,
+                title: "Quantum Entanglement & Non-Locality",
+                category: "Quantum Physics",
+                desc: "Spooky action at a distance where particles remain interconnected regardless of spatial separation, challenging classical deterministic physics.",
+                connection: "Links quantum vacuum fluctuations with macroscopic cosmic web filaments.",
+                meta: "Mirrors ancient non-dualistic philosophical perspectives of universal oneness.",
+                paper: "Non-Local Information Transfer in Spacetime Fabric (PDF)"
+            },
+            {
+                id: 2,
+                title: "The Holographic Principle",
+                category: "Astrophysics & Gravity",
+                desc: "Proposes that the entire 3D volume of the universe can be encoded on a 2D boundary surface at the cosmological horizon.",
+                connection: "Unifies black hole thermodynamics with quantum information theory.",
+                meta: "Suggests physical reality is an informational projection of deeper mathematical truths.",
+                paper: "Boundary Encoding & Information Preservation in AdS/CFT (PDF)"
+            },
+            {
+                id: 3,
+                title: "Vedic Cosmology & Universal Heartbeat",
+                category: "Metaphysics & History",
+                desc: "Ancient cyclical models of creation, preservation, and dissolution (Yugas and Kalpas) resonating with modern pulsating universe hypotheses.",
+                connection: "Connects rhythmic cosmic oscillations with modern dark energy expansion cycles.",
+                meta: "Provides a philosophical framework for eternal recurrence and consciousness.",
+                paper: "Cyclical Time Scales in Comparative Cosmology (PDF)"
+            },
+            {
+                id: 4,
+                title: "Multiverse Topologies & Eternal Inflation",
+                category: "Cosmological Models",
+                desc: "Explores pocket universes born from exponential cosmic inflation, each potentially possessing different physical constants.",
+                connection: "Resolves fine-tuning paradoxes in anthropic principle discussions.",
+                meta: "Expands human philosophical imagination beyond single-reality constraints.",
+                paper: "Topological Variance Across Inflationary Bubble Universes (PDF)"
+            },
+            {
+                id: 5,
+                title: "Thermodynamic Arrow of Time",
+                category: "Statistical Mechanics",
+                desc: "The unidirectional flow of entropy from low-entropy initial singularity (Big Bang) toward maximum thermal equilibrium.",
+                connection: "Governs biological complexity and the subjective experience of memory.",
+                meta: "Defines the existential boundary between past determinism and future potential.",
+                paper: "Entropy Gradients and Informational Complexity in Spacetime (PDF)"
+            }
+        ];
+
+        let activeNodeIndex = 0;
+
+        function renderNodeList() {
+            const container = document.getElementById('nodeListContainer');
+            container.innerHTML = '';
+
+            cosmologicalNodes.forEach((node, idx) => {
+                const isActive = idx === activeNodeIndex;
+                const card = document.createElement('div');
+                card.className = `p-4 rounded-2xl cursor-pointer transition flex items-center justify-between border ${
+                    isActive ? 'bg-purple-600/20 border-purple-500 text-white shadow-lg' : 'glass-card border-purple-900/30 text-slate-300 hover:border-purple-500/40'
+                }`;
+                card.onclick = () => { activeNodeIndex = idx; renderNodeList(); loadNodeDetails(); };
+                card.innerHTML = `
+                    <div class="flex items-center gap-3">
+                        <div class="w-8 h-8 rounded-xl ${isActive ? 'bg-purple-600 text-white' : 'bg-slate-800 text-purple-400'} flex items-center justify-center font-bold text-xs">
+                            0${idx + 1}
+                        </div>
+                        <div>
+                            <h4 class="text-xs font-bold">${node.title}</h4>
+                            <span class="text-[10px] text-purple-300/80">${node.category}</span>
+                        </div>
+                    </div>
+                    <i data-lucide="${isActive ? 'chevron-down' : 'chevron-right'}" class="w-4 h-4 text-purple-400"></i>
+                `;
+                container.appendChild(card);
+            });
+
+            loadNodeDetails();
+            lucide.createIcons();
+        }
+
+        function loadNodeDetails() {
+            const node = cosmologicalNodes[activeNodeIndex];
+            document.getElementById('activeNodeCategory').innerText = node.category;
+            document.getElementById('activeNodeTitle').innerText = node.title;
+            document.getElementById('activeNodeDesc').innerText = node.desc;
+            document.getElementById('activeNodeConnection').innerText = node.connection;
+            document.getElementById('activeNodeMeta').innerText = node.meta;
+            document.getElementById('activeNodePaper').innerText = node.paper;
+        }
+
+        // Render Theories Repository
+        const theoriesList = [
+            { title: 'The Pulsating Cosmos & Universal Heartbeat', cat: 'Cosmology', desc: 'An examination of universal expansion and contraction cycles.' },
+            { title: 'Quantum Decoherence & Observer Effect', cat: 'Quantum Physics', desc: 'How conscious measurement collapses probability wavefunctions.' },
+            { title: 'Fractal Geometry of Spacetime Filaments', cat: 'Astrophysics', desc: 'Mapping galaxy superclusters to neural network topologies.' },
+            { title: 'Non-Dual Metaphysics in Modern Particle Physics', cat: 'Philosophy', desc: 'Bridging Advaita Vedanta with quantum field theory.' }
+        ];
+
+        function renderTheories() {
+            const grid = document.getElementById('theoriesGrid');
+            grid.innerHTML = '';
+            theoriesList.forEach(t => {
+                grid.innerHTML += `
+                    <div class="glass-card p-5 rounded-2xl space-y-3">
+                        <span class="text-[10px] font-bold px-2.5 py-1 rounded-full bg-purple-500/20 text-purple-300 uppercase">${t.cat}</span>
+                        <h4 class="font-serif font-bold text-lg text-white">${t.title}</h4>
+                        <p class="text-xs text-slate-300 leading-relaxed">${t.desc}</p>
+                        <button onclick="alert('Opening full article and citation matrix...')" class="text-xs font-bold text-purple-400 hover:text-purple-300 flex items-center gap-1">Read Research Brief &rarr;</button>
+                    </div>
+                `;
+            });
+        }
+
+        // AI Synthesizer Simulator
+        function synthesizeAI() {
+            const query = document.getElementById('aiQueryInput').value.trim();
+            const box = document.getElementById('aiOutputBox');
+
+            if (!query) {
+                alert('Please enter a cosmological hypothesis or inquiry.');
+                return;
+            }
+
+            box.classList.remove('hidden');
+            box.innerHTML = `
+                <div class="flex items-center gap-2 text-purple-400 font-bold text-xs uppercase tracking-wider animate-pulse">
+                    <i data-lucide="sparkles" class="w-4 h-4"></i> Synthesizing Quantum & Metaphysical Framework...
+                </div>
+                <h4 class="text-lg font-bold font-serif text-white mt-1">Synthesis on: "${query}"</h4>
+                <p class="text-xs sm:text-sm text-slate-300 leading-relaxed mt-2">
+                    <strong>Academic Synthesis:</strong> When analyzing this inquiry through the lens of modern gauge-gravity duality and quantum field connectivity, we observe that information is neither created nor destroyed at the horizon boundary. This supports a holistic, non-reductionist view of the cosmos where local phenomena mirror global topological structures.
+                </p>
+                <div class="p-3 rounded-xl bg-purple-950/50 border border-purple-500/30 text-xs text-purple-200">
+                    <em>Suggested Citation:</em> Cosmological Explorer AI Knowledge Base, Synthesized Research Module v4.2.
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        // Tab Switcher
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = "nav-btn px-4 py-2 rounded-xl text-xs font-semibold text-slate-300 hover:text-white transition";
+            });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.className = "nav-btn px-4 py-2 rounded-xl text-xs font-semibold bg-purple-600 text-white transition shadow-md";
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Starfield Canvas Background
+        function initStarfield() {
+            const canvas = document.getElementById('starCanvas');
+            const ctx = canvas.getContext('2d');
+            let stars = [];
+
+            function resize() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+                stars = [];
+                for (let i = 0; i < 120; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        radius: Math.random() * 1.5,
+                        alpha: Math.random(),
+                        speed: Math.random() * 0.015
+                    });
+                }
+            }
+
+            function draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                stars.forEach(star => {
+                    star.alpha += star.speed;
+                    if (star.alpha > 1 || star.alpha < 0) star.speed = -star.speed;
+                    ctx.beginPath();
+                    ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(192, 132, 252, ${Math.abs(star.alpha)})`;
+                    ctx.fill();
+                });
+                requestAnimationFrame(draw);
+            }
+
+            window.addEventListener('resize', resize);
+            resize();
+            draw();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderNodeList();
+            renderTheories();
+            initStarfield();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
